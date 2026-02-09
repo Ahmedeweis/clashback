@@ -31,4 +31,26 @@ const getClanCWL = async (req, res) => {
     }
 };
 
-module.exports = { getClan, getClanCWL };
+const getClanWarLog = async (req, res) => {
+    const tag = req.params.tag;
+    const clanTag = encodeURIComponent(tag);
+    // Convert req.query to a query string
+    const queryParams = new URLSearchParams(req.query).toString();
+
+    try {
+        const url = `https://api.clashofclans.com/v1/clans/${clanTag}/warlog${queryParams ? '?' + queryParams : ''}`;
+        const data = await fetchData(
+            url,
+            `clan_warlog_${tag.replace("#", "")}`
+        );
+        res.json(data);
+    } catch (err) {
+        const status = err.response?.status || 500;
+        if (status === 403) {
+            return res.status(403).json({ error: "AccessDenied", message: "Clan war log is private" });
+        }
+        res.status(status).json({ error: "Failed to fetch clan war log", details: err.message });
+    }
+};
+
+module.exports = { getClan, getClanCWL, getClanWarLog };
