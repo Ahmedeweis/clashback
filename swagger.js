@@ -1,3 +1,4 @@
+const path = require("path");
 const swaggerJsdoc = require("swagger-jsdoc");
 
 const options = {
@@ -10,12 +11,12 @@ const options = {
         },
         servers: [
             {
-                url: "http://localhost:5000",
-                description: "Local server",
+                url: "/",
+                description: "Current server",
             },
         ],
     },
-    apis: ["./routes/*.js"], // Path to the API docs
+    apis: [path.join(__dirname, "routes/*.js").replace(/\\/g, "/")], // Path to the API docs
 };
 
 const specs = swaggerJsdoc(options);
